@@ -5,17 +5,6 @@ services:
     container_name: frontend
     ports: 
       - "3000:3000"
-  database: 
-    image: mysql:8
-    restart: always
-    tty: true
-    volumes:
-      - "./database/dump/:/docker-entrypoint-initdb.d/"
-    env_file:
-      - .env
-    ports: 
-      - "6603:3306"
-    command: mysqld
   backend: 
     build: ./server/
     container_name: backend
