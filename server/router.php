@@ -9,8 +9,6 @@ include_once BASE_PATH."/server/functions/index.php";
 
 // ~ ENDPOINTS: 
 
-// ^ GET /test/
-endpoint("test");
 
 include BASE_PATH."/server/404.php";
 ?>
