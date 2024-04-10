@@ -18,9 +18,10 @@ endpoint("users/login", "POST");
 endpoint("users/register", "POST");
 // ! POST /containers/create
 endpoint("containers/create", "POST");
-
-// FIXME: 
-endpoint("test");
+// & DELETE /users/*/containers/*
+endpoint("users/.{1,}/containers/.{1,}", "DELETE", "/server/pages/containers/delete/");
+// & DELETE /users/*/containers/*
+endpoint("users/.{1,}/containers/.{1,}", "GET", "/server/pages/containers/get/");
 
 
 include BASE_PATH."/server/404.php";

@@ -1,46 +1,476 @@
 {
-  "apiVersion": "1.0.0",
-  "swaggerVersion": "2.0",
-  "apis": [
+  "swagger": "2.0",
+  "info": {
+    "description": "Апи для взаимодействия клиента и серера в приложении Cloud file sharing (aka juh)",
+    "version": "1.0.7",
+    "title": "Cloud file sharing"
+  },
+  "host": "localhost:8000",
+  "basePath": "/",
+  "tags": [
     {
-        "path": "/users/login",
-        "description": "Логинит пользователя", 
-        "operations": [
-          {
-            "method": "POST",
-            "summary": "Пытается залогинить пользователя",
-            "notes": " ",
-            "nickname": "getOrderById",
-            "authorizations": {},
-            "parameters": [
-              {
-                "name": "orderId",
-                "description": "ID of pet that needs to be fetched",
-                "required": true,
-                "type": "string",
-                "paramType": "path"
-              }
-            ],
-            "responseMessages": [
-              {
-                "code": 400,
-                "message": "Invalid ID supplied"
-              },
-              {
-                "code": 404,
-                "message": "Order not found"
-              }
-            ]
-          }
-        ]
+      "name": "users",
+      "description": "Everything about users logic"
+    },
+    {
+      "name": "files",
+      "description": "Everything about files logic"
     }
   ],
-  "info": {
-    "title": "Swagger Sample App",
-    "description": "This is a sample server Petstore server.  You can find out more about Swagger \n    at <a href=\"http://swagger.wordnik.com\">http://swagger.wordnik.com</a> or on irc.freenode.net, #swagger.  For this sample,\n    you can use the api key \"special-key\" to test the authorization filters",
-    "termsOfServiceUrl": "http://helloreverb.com/terms/",
-    "contact": "apiteam@wordnik.com",
-    "license": "Apache 2.0",
-    "licenseUrl": "http://www.apache.org/licenses/LICENSE-2.0.html"
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/users/login": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "логинит пользователя",
+        "operationId": "loginUser",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "login": {
+                  "type": "string",
+                  "example": "user"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "on successful operation response is HTTP 200 and true as response",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            }
+          },
+          "403": {
+            "description": "incorrect login or password was given",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 403
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Incorrect data"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "user not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Invalid request"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/register": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "регистрирует пользователя",
+        "operationId": "registerUser",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "login": {
+                  "type": "string",
+                  "example": "user"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "on successful registration response is HTTP 200 and true as response",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            }
+          },
+          "409": {
+            "description": "unsuccessfull registration. Username alreay busy",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 409
+                },
+                "message": {
+                  "type": "string",
+                  "example": "User already exists"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/containers/create": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "сохраняет файлы",
+        "description": "используется для создания нового контейнера с файлами, загруженными пользователем",
+        "operationId": "postContainer",
+        "security": [
+          {
+            "jwtTocken": []
+          }
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "files",
+            "in": "formData",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "при успешном создании контейнера получаем в ответ ссылку на него",
+            "schema": {
+              "type": "string",
+              "example": "/users/sewaca/containers/1edc24fs94"
+            }
+          },
+          "403": {
+            "description": "не создался контейнер из-за того что пользователь не авторизован",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 403
+                },
+                "message": {
+                  "type": "string",
+                  "example": "User already exists"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/containers/{containerId}": {
+      "delete": {
+        "tags": [
+          "files"
+        ],
+        "summary": "удаляет контейнер или файл из него",
+        "description": "используется для удаления созданного контейнера или одного из файлов",
+        "operationId": "deleteContainer",
+        "security": [
+          {
+            "jwtTocken": []
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "containerId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "filename",
+            "in": "query",
+            "type": "string",
+            "required": false,
+            "description": "название удаляемого файла. Если не задано, удаляет контейнер"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "возвращает ответ на вопрос \"получилось ли удалить контейнер?\"",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            }
+          },
+          "403": {
+            "description": "у залогиненного пользователя нет права удалять контейнер",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 403
+                },
+                "message": {
+                  "type": "string",
+                  "example": "User has no container with such id"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "получает файлы контейнера",
+        "description": "используется при просмотре контейнера",
+        "operationId": "getContainerInfo",
+        "security": [
+          {
+            "jwtTocken": []
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "containerId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID просматриваемого контейнера"
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID владельца контейнера"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "контейнер успешно получен",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "example": "название контейнера"
+                },
+                "filenames": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "file1.json",
+                    "file2.txt"
+                  ],
+                  "description": "названия файлов"
+                },
+                "isOwner": {
+                  "type": "boolean",
+                  "example": false,
+                  "description": "является ли пользователь владельцем контейнера (может ли удалять файлы / контейнер)"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "пользователь не залогинен или не имеет права просматривать контейнер",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 403
+                },
+                "message": {
+                  "type": "string",
+                  "example": "User can't reach the container"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "указанного контейнера не существует",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}/containers/{containerId}/download": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "получает файлы на загрузку",
+        "description": "используется при нажатии на кнопку \"скачать\" для конкретного файла или контейнера целиком",
+        "operationId": "возвращает на загрузку нужный файл или контейнер",
+        "security": [
+          {
+            "jwtTocken": []
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "containerId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "filename",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "если не задан, скачается весь контейнер"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "при успешном создании контейнера получаем в ответ ссылку на него",
+            "schema": {
+              "type": "string",
+              "format": "binary",
+              "description": "отдаёт на загрузку файл (для JS это ReadableStream)"
+            }
+          },
+          "403": {
+            "description": "не удаётся скачать из-за того что пользователь не авторизован или ему не открыт доступ к контейнеру",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 403
+                },
+                "message": {
+                  "type": "string",
+                  "example": "User can't reach container"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "файл или контейнер не существует",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number",
+                  "example": 404
+                },
+                "massage": {
+                  "type": "string",
+                  "example": "Not found"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "jwtTocken": {
+      "name": "jwt",
+      "type": "apiKey",
+      "in": "header",
+      "description": "jwt, полученное при регистрации/логине отправляется в куках"
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
   }
 }

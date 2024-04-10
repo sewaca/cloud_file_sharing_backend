@@ -37,10 +37,24 @@ mkdir(BASE_PATH.$path."/files/");
 // TODO: Добавить запись настроек контейнера
 
 // Записываем файлы
+$filenames = [];
 foreach ($data["files"] as $file) {
-    $f = fopen(BASE_PATH.$path."/files/".$file["name"], "wb");
+    // Даём файлу уникальное название в рамках директории
+    $real_filename = implode(".", array_slice(explode(".", $file["name"]), 0, -1));
+    $file_extension = ".".array_pop(explode(".", $file["name"]));
+    while (in_array ($real_filename.$file_extension, $filenames)) 
+        $real_filename .= "__copy";
+    $real_filename .= $file_extension; // возвращаем файлу его первоначальное расширение
+    array_push($filenames, $real_filename); // добавляем имя текущего файла в массив имён
+
+    // Создаём и записываем файл
+    $f = fopen(BASE_PATH.$path."/files/".$real_filename, "wb");
     fputs($f, base64_decode($file["data"]));
     fclose($f);
 }
+// создаём индекс-файл
+$indexFile = fopen(BASE_PATH.$path."/index", "wb");
+fputs($indexFile, implode("\n", $filenames));
+fclose($indexFile);
 
 echo json_encode(str_replace("/server/temp", "", $path));
