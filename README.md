@@ -1,5 +1,5 @@
 # meeting-management__backend
-Backend для приложения, разворачиваемый на localhost:8080
+Backend для приложения, разворачивается на localhost:8080
 
 ## Как запустить:
 1. Скачать репозиторий
@@ -14,9 +14,3 @@ docker-compose down
 ## Тестовые данные:
 
 Тестовый аккаунт для логина:
-```json
-{
-    "email": "example@gmail.com",
-    "password": "my_new_insane_pass"
-}
-```

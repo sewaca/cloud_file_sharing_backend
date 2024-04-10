@@ -9,6 +9,7 @@ function send_file_stream($file) {
         ob_end_clean();
     }
     // заставляем браузер показать окно сохранения файла
+    header('Access-Control-Expose-Headers: Content-Disposition');
     header('Content-Description: File Transfer');
     header('Content-Type: application/octet-stream');
     header('Content-Disposition: attachment; filename=' . basename($file));
