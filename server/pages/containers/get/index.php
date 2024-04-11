@@ -10,14 +10,17 @@ $data = [
 // Получаем залогиненного пользователя
 $login = decode_jwt($_COOKIE["jwt"]);
 
-// TODO: Добавить проверку разрешено ли пользователю просматривать этот контейнер
+// Получаем настройки контейнера
+$settings_file__path = BASE_PATH."/server/temp/users/".$login."/containers/".$data["containerId"]."/settings.json";
+$settings = json_decode(file_get_contents($settings_file__path), true);
 
-$indexfile_path = BASE_PATH."/server/temp/users/".$login."/containers/".$data["containerId"]."/index";
+// Проверяем разрешено ли пользователю просматривать контейнер
+if (!in_array($login, $settings["viewers"]))
+    include BASE_PATH."/server/403.php";
 
-
-$data = [
-    // TODO: Сделать название контейнера
-    "title" => "",
-    "filenames" => explode("\n", file_get_contents($index_file)),
+// Отправляем ответ клиенту
+echo json_encode([
+    "title" => $settings["title"],
+    "filenames" => $settings["files"],
     "isOwner" => $data["userId"] === $login
-];
+]);

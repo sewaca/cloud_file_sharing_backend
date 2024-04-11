@@ -25,23 +25,21 @@ if (
     $login !== $data["userId"] or 
     !file_exists(BASE_PATH."/server/temp/users/".$login."/containers/".$data["containerId"]) or 
     ($data["filename"] !== null and !file_exists(BASE_PATH."/server/temp/users/".$login."/containers/".$data["containerId"]."/files/".$data["filename"]))
-) {
-    header("HTTP/1.1 403 Forbidden");
-    echo json_encode(["code" => 403, "message" => "Incorrect data"]);
-    exit;
-}
+) include BASE_PATH."/server/403.php";
 
 // Если пользователь хочет удалить весь контейнер целиком:
 if ($data["filename"] === null) 
     removeDirectory (BASE_PATH."/server/temp/users/".$login."/containers/".$data["containerId"]);
 // Если необходимо удалить только один файл
 else {
+    $settings_file = BASE_PATH."/server/temp/users/".$login."/containers/".$data["containerId"]."/settings.json";
     $file_to_delete = BASE_PATH."/server/temp/users/".$login."/containers/".$data["containerId"]."/files/".$data["filename"];
-    $index_file = BASE_PATH."/server/temp/users/".$login."/containers/".$data["containerId"]."/index";
     // Удаляем файл
     unlink($file_to_delete);
-    // Обновляем index-файл
-    file_put_contents($index_file, str_replace($data["filename"]."\n", '', file_get_contents($index_file)));
+    // Обновляем настройки контейнера
+    $settings = json_decode(file_get_contents($settings_file), true);
+    array_splice($settings["files"], array_search($data["filename"], $settings["files"]), 1);
+    file_put_contents($settings_file, json_encode($settings));
 }
 
 header("HTTP/1.1 200 OK");

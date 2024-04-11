@@ -11,16 +11,11 @@ function rand_str($length, $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmno
 
 // Проверяем что пользователь залогинен
 $login = decode_jwt($_COOKIE["jwt"]);
-if (!file_exists(BASE_PATH."/server/temp/users/".$login)) {
-    header("HTTP/1.1 403 Forbidden");
-    echo json_encode(["code" => 403, "message" => "Incorrect data"]);
-    exit;
-}
+if (!file_exists(BASE_PATH."/server/temp/users/".$login))
+    include BASE_PATH."/server/403.php";
 
 // Генерируем имя контейнера
-$flag = true;
-$container_name;
-$path;
+$flag = true; $container_name; $path;
 while ($flag) {
     $container_name = rand_str(25);
     $path = "/server/temp/users/".$login."/containers/".$container_name;
@@ -34,9 +29,8 @@ $data = json_decode(file_get_contents("php://input"), true);
 mkdir(BASE_PATH."/server/temp/users/".$login."/containers/");
 mkdir(BASE_PATH.$path);
 mkdir(BASE_PATH.$path."/files/");
-// TODO: Добавить запись настроек контейнера
 
-// Записываем файлы
+// Записываем файлы переданные с фронта
 $filenames = [];
 foreach ($data["files"] as $file) {
     // Даём файлу уникальное название в рамках директории
@@ -52,9 +46,15 @@ foreach ($data["files"] as $file) {
     fputs($f, base64_decode($file["data"]));
     fclose($f);
 }
-// создаём индекс-файл
-$indexFile = fopen(BASE_PATH.$path."/index", "wb");
-fputs($indexFile, implode("\n", $filenames));
-fclose($indexFile);
+
+// создаём файл с настройками:
+$settings = [
+    "title" => $data["title"],
+    "files" => $filenames,
+    "viewers" => $data["viewers"]
+];
+$settingsFile = fopen(BASE_PATH.$path."/settings.json", "wb");
+fputs($settingsFile, json_encode($settings));
+fclose($settingsFile);
 
 echo json_encode(str_replace("/server/temp", "", $path));

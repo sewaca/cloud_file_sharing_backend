@@ -7,12 +7,14 @@ function endpoint($path, $method = 'GET', $backendFilePath = ""){
   $regex = "/^\/".str_replace('/', '\/', $path)."\/?$"
           ."|^\/".str_replace('/', '\/', $path)."\/.*$/i";
 
+
   // Проверяем совпадает ли запрос с эндпоинтом
-  $isNotMatchingEndpoint = !preg_match($regex, $request_url) or 
-          ($backendFilePath == "" and !file_exists(BASE_PATH."/server/pages/$path/index.php")) or
-          ($backendFilePath !== "" and !file_exists(BASE_PATH.$backendFilePath."index.php")) or
-          $request_method !== $method;
-  if ($isNotMatchingEndpoint) return;
+  if (
+        !preg_match($regex, $request_url)
+        or ($backendFilePath == "" and !file_exists(BASE_PATH."/server/pages/$path/index.php"))
+        or ($backendFilePath != "" and !file_exists(BASE_PATH.$backendFilePath."index.php"))
+        or $request_method !== $method
+  ) return;
 
   // Если совпадает, то подключаем необходимый обработчик
   if ($backendFilePath == "") include BASE_PATH."/server/pages/$path/index.php";

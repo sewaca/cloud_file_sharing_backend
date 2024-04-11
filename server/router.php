@@ -11,7 +11,6 @@ $dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH);
 $dotenv->load();
 
 // ~ ENDPOINTS: 
-
 // ! POST /users/login
 endpoint("users/login", "POST");
 // ! POST /users/register
@@ -19,8 +18,8 @@ endpoint("users/register", "POST");
 // ! POST /containers/create
 endpoint("containers/create", "POST");
 // & DELETE /users/*/containers/*
-endpoint("users/.{1,}/containers/.{1,}", "DELETE", "/server/pages/containers/delete/");
-// & DELETE /users/*/containers/*
+endpoint("users/.{1,}/containers/.{1,}", 'DELETE', "/server/pages/containers/delete/");
+// ^ GET /users/*/containers/*
 endpoint("users/.{1,}/containers/.{1,}", "GET", "/server/pages/containers/get/");
 
 

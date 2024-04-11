@@ -172,17 +172,72 @@
           }
         ],
         "consumes": [
-          "multipart/form-data"
+          "application/json"
         ],
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "files",
-            "in": "formData",
+            "name": "body",
+            "in": "body",
             "required": true,
-            "type": "file"
+            "schema": {
+              "type": "object",
+              "properties": {
+                "files": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "string",
+                        "format": "base64"
+                      }
+                    }
+                  },
+                  "description": "Массив объектов, содержащих название файла и его base64 кодировку.",
+                  "example": [
+                    {
+                      "name": "1.txt",
+                      "data": "MQ=="
+                    },
+                    {
+                      "name": "1.txt",
+                      "data": "MQ=="
+                    },
+                    {
+                      "name": "1.txt",
+                      "data": "MQ=="
+                    },
+                    {
+                      "name": "1.now.more.dots.example.txt",
+                      "data": "MQ=="
+                    }
+                  ]
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Название контейнера. Если пустая строка - название будет \"Без названия\"",
+                  "example": "Containers' title"
+                },
+                "viewers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Если массив пустой - файл доступен всем пользователям. Иначе, в массиве должны находиться никнеймы пользователей, у которых есть доступ к просмотру контейнера",
+                  "example": [
+                    "sewaca",
+                    "sticky_dice",
+                    "sand_magic_shooter"
+                  ]
+                }
+              }
+            }
           }
         ],
         "responses": {

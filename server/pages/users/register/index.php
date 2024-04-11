@@ -2,11 +2,8 @@
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (file_exists(BASE_PATH."/server/temp/users/".$data['login'])) {
-    header("HTTP/1.1 409 Conflict");
-    echo json_encode(["code" => 409, "message" => "User already exists"]);
-    exit;
-}
+if (file_exists(BASE_PATH."/server/temp/users/".$data['login'])) 
+    include BASE_PATH."/server/409.php";
 
 $encrypted_password = password_hash($data["password"], PASSWORD_ARGON2I, [
     "salt" => $_ENV["SALT"]
