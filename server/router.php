@@ -8,8 +8,8 @@ include_once BASE_PATH."/server/definitions.php";
 include_once BASE_PATH."/server/vendor/autoload.php";
 include_once BASE_PATH."/server/functions/index.php";
 
-// $dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH === "" ? "/" : BASE_PATH);
-// $dotenv->load();
+$dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH."/server/");
+$dotenv->load();
 
 // ~ ENDPOINTS: 
 // ! POST /users/login
