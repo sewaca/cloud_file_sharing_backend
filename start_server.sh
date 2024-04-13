@@ -1,1 +1,1 @@
-php -S 127.0.0.1:8080 ./server/router.php
+php -S 127.0.0.1:8000 ./server/router.php

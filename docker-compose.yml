@@ -1,21 +1,19 @@
 version: '3.8'
 services:
-  frontend:
-    build: ./frontend/
-    container_name: frontend
-    ports: 
-      - "3000:3000"
+  # frontend:
+  #   build: ./frontend/
+  #   container_name: frontend
+  #   ports: 
+  #     - "3000:3000"
   backend: 
     build: ./server/
     container_name: backend
     restart: always
     tty: true
     env_file:
-      - .env
+      - ./server/.env
     environment:
       - IS_BUILD=true
-    command: php -S 0.0.0.0:8080 /server/router.php
+    command: php -S 0.0.0.0:8000 /server/router.php
     ports: 
-      - "8080:8080"
-    depends_on:
-      - database
+      - "8000:8000"

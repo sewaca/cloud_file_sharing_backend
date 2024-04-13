@@ -14,7 +14,7 @@ $uri = explode("/", explode('?', $_SERVER['REQUEST_URI'])[0]);
 $data = [
     "userId" => $uri[2],
     "containerId" => $uri[4],
-    "filename" => $_GET["filename"] ? $_GET["filename"] : null,
+    "filename" => isset($_GET["filename"]) ? $_GET["filename"] : null,
 ];
 
 // Получаем залогиненного пользователя
@@ -23,17 +23,17 @@ $login = decode_jwt($_COOKIE["jwt"]);
 // Если искомого файла не существует или пользователь не является владельцем
 if (
     $login !== $data["userId"] or 
-    !file_exists(BASE_PATH."/server/temp/users/".$login."/containers/".$data["containerId"]) or 
-    ($data["filename"] !== null and !file_exists(BASE_PATH."/server/temp/users/".$login."/containers/".$data["containerId"]."/files/".$data["filename"]))
+    !file_exists(TEMP_FOLDER."/users/".$login."/containers/".$data["containerId"]) or 
+    ($data["filename"] !== null and !file_exists(TEMP_FOLDER."/users/".$login."/containers/".$data["containerId"]."/files/".$data["filename"]))
 ) include BASE_PATH."/server/403.php";
 
 // Если пользователь хочет удалить весь контейнер целиком:
 if ($data["filename"] === null) 
-    removeDirectory (BASE_PATH."/server/temp/users/".$login."/containers/".$data["containerId"]);
+    removeDirectory (TEMP_FOLDER."/users/".$login."/containers/".$data["containerId"]);
 // Если необходимо удалить только один файл
 else {
-    $settings_file = BASE_PATH."/server/temp/users/".$login."/containers/".$data["containerId"]."/settings.json";
-    $file_to_delete = BASE_PATH."/server/temp/users/".$login."/containers/".$data["containerId"]."/files/".$data["filename"];
+    $settings_file = TEMP_FOLDER."/users/".$login."/containers/".$data["containerId"]."/settings.json";
+    $file_to_delete = TEMP_FOLDER."/users/".$login."/containers/".$data["containerId"]."/files/".$data["filename"];
     // Удаляем файл
     unlink($file_to_delete);
     // Обновляем настройки контейнера

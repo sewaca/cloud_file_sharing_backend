@@ -16,5 +16,3 @@ function compress_folder($source, $destination) {
 
     return $destination;
 }
-
-?>      

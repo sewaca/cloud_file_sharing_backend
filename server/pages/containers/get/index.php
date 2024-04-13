@@ -11,7 +11,9 @@ $data = [
 $login = decode_jwt($_COOKIE["jwt"]);
 
 // Получаем настройки контейнера
-$settings_file__path = BASE_PATH."/server/temp/users/".$login."/containers/".$data["containerId"]."/settings.json";
+$settings_file__path = TEMP_FOLDER."/users/".$login."/containers/".$data["containerId"]."/settings.json";
+if (!file_exists($settings_file__path)) 
+    include BASE_PATH."/server/404.php";
 $settings = json_decode(file_get_contents($settings_file__path), true);
 
 // Проверяем разрешено ли пользователю просматривать контейнер

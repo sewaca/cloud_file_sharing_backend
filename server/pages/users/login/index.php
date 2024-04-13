@@ -2,10 +2,10 @@
 
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (!file_exists(BASE_PATH."/server/temp/users/".$data['login'])) 
+if (!file_exists(TEMP_FOLDER."/users/".$data['login'])) 
     include BASE_PATH."/server/403.php";
 
-$saved_password = file_get_contents(BASE_PATH."/server/temp/users/".$data['login']."/password");
+$saved_password = file_get_contents(TEMP_FOLDER."/users/".$data['login']."/password");
 if (!password_verify($data["password"], $saved_password))     
     include BASE_PATH."/server/403.php";
 

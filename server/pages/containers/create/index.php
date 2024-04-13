@@ -11,38 +11,39 @@ function rand_str($length, $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmno
 
 // Проверяем что пользователь залогинен
 $login = decode_jwt($_COOKIE["jwt"]);
-if (!file_exists(BASE_PATH."/server/temp/users/".$login))
+if (!file_exists(TEMP_FOLDER."/users/".$login))
     include BASE_PATH."/server/403.php";
 
 // Генерируем имя контейнера
 $flag = true; $container_name; $path;
 while ($flag) {
     $container_name = rand_str(25);
-    $path = "/server/temp/users/".$login."/containers/".$container_name;
-    $flag = file_exists(BASE_PATH.$path);
+    $path = "/users/".$login."/containers/".$container_name;
+    $flag = file_exists(TEMP_FOLDER.$path);
 }
 
 // Получаем данные
 $data = json_decode(file_get_contents("php://input"), true);
 
 // Создаём необходимые папки
-mkdir(BASE_PATH."/server/temp/users/".$login."/containers/");
-mkdir(BASE_PATH.$path);
-mkdir(BASE_PATH.$path."/files/");
+if (!file_exists(TEMP_FOLDER."/users/".$login."/containers/"))
+    mkdir(TEMP_FOLDER."/users/".$login."/containers/");
+mkdir(TEMP_FOLDER.$path);
+mkdir(TEMP_FOLDER.$path."/files/");
 
 // Записываем файлы переданные с фронта
 $filenames = [];
 foreach ($data["files"] as $file) {
     // Даём файлу уникальное название в рамках директории
-    $real_filename = implode(".", array_slice(explode(".", $file["name"]), 0, -1));
-    $file_extension = ".".array_pop(explode(".", $file["name"]));
+    $real_filename = implode(".", array_slice((explode(".", $file["name"])), 0, -1));
+    $file_extension = ".".array_slice(explode(".", $file["name"]), -1, 1)[0];
     while (in_array ($real_filename.$file_extension, $filenames)) 
         $real_filename .= "__copy";
     $real_filename .= $file_extension; // возвращаем файлу его первоначальное расширение
     array_push($filenames, $real_filename); // добавляем имя текущего файла в массив имён
 
     // Создаём и записываем файл
-    $f = fopen(BASE_PATH.$path."/files/".$real_filename, "wb");
+    $f = fopen(TEMP_FOLDER.$path."/files/".$real_filename, "wb");
     fputs($f, base64_decode($file["data"]));
     fclose($f);
 }
@@ -53,8 +54,8 @@ $settings = [
     "files" => $filenames,
     "viewers" => $data["viewers"]
 ];
-$settingsFile = fopen(BASE_PATH.$path."/settings.json", "wb");
+$settingsFile = fopen(TEMP_FOLDER.$path."/settings.json", "wb");
 fputs($settingsFile, json_encode($settings));
 fclose($settingsFile);
 
-echo json_encode(str_replace("/server/temp", "", $path));
+echo json_encode($path);

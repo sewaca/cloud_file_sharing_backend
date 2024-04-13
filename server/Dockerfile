@@ -4,9 +4,9 @@ FROM composer
 COPY . /server
 WORKDIR /server
 
-EXPOSE 8080
+EXPOSE 8000
 
 RUN composer install
-RUN docker-php-ext-install mysqli 
+# RUN docker-php-ext-install mysqli 
 
 # CMD php -S 0.0.0.0:8080 /server/router.php
