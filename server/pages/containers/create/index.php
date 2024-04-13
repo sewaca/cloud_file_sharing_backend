@@ -1,14 +1,5 @@
 <?php
 
-function rand_str($length, $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789') {
-    $result = '';
-    $count = strlen($charset);
-    for ($i = 0; $i < $length; $i++) {
-        $result .= $charset[mt_rand(0, $count - 1)];
-    }
-    return $result;
-}
-
 // Проверяем что пользователь залогинен
 $login = decode_jwt($_COOKIE["jwt"]);
 if (!file_exists(TEMP_PATH."/users/".$login))
@@ -17,7 +8,7 @@ if (!file_exists(TEMP_PATH."/users/".$login))
 // Генерируем имя контейнера
 $flag = true; $container_name; $path;
 while ($flag) {
-    $container_name = rand_str(25);
+    $container_name = random_string(25);
     $path = "/users/".$login."/containers/".$container_name;
     $flag = file_exists(TEMP_PATH.$path);
 }

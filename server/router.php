@@ -9,6 +9,8 @@ endpoint("users/register", "POST");
 endpoint("containers/create", "POST");
 // & DELETE /users/*/containers/*
 endpoint("users/.{1,}/containers/.{1,}", 'DELETE', "/server/pages/containers/delete/");
+// ^ GET /users/*/containers/*/download
+endpoint("users/.{1,}/containers/.{1,}/download", "GET", "/server/pages/containers/download/");
 // ^ GET /users/*/containers/*
 endpoint("users/.{1,}/containers/.{1,}", "GET", "/server/pages/containers/get/");
 

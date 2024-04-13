@@ -11,7 +11,7 @@ class HZip{private static function folderToZip($folder,&$zipFile,$exclusiveLengt
  */
 function compress_folder($source, $destination) {
     if (!is_dir($source)) return include BASE_PATH."/server/404.php";
-
+    
     HZip::zipDir($source, $destination);
 
     return $destination;
