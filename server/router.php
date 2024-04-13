@@ -1,7 +1,7 @@
 <?php
 
 define('BASE_PATH', ($_ENV['IS_BUILD'] ? '' : '.'));
-define('TEMP_FOLDER', ($_ENV['IS_BUILD'] ? sys_get_temp_dir() : BASE_PATH."/server/temp"));
+define('TEMP_PATH', ($_ENV['IS_BUILD'] ? sys_get_temp_dir() : BASE_PATH."/server/temp"));
 
 include_once BASE_PATH."/server/headers.php";
 include_once BASE_PATH."/server/definitions.php";

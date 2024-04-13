@@ -11,7 +11,7 @@ function rand_str($length, $charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmno
 
 // Проверяем что пользователь залогинен
 $login = decode_jwt($_COOKIE["jwt"]);
-if (!file_exists(TEMP_FOLDER."/users/".$login))
+if (!file_exists(TEMP_PATH."/users/".$login))
     include BASE_PATH."/server/403.php";
 
 // Генерируем имя контейнера
@@ -19,17 +19,17 @@ $flag = true; $container_name; $path;
 while ($flag) {
     $container_name = rand_str(25);
     $path = "/users/".$login."/containers/".$container_name;
-    $flag = file_exists(TEMP_FOLDER.$path);
+    $flag = file_exists(TEMP_PATH.$path);
 }
 
 // Получаем данные
 $data = json_decode(file_get_contents("php://input"), true);
 
 // Создаём необходимые папки
-if (!file_exists(TEMP_FOLDER."/users/".$login."/containers/"))
-    mkdir(TEMP_FOLDER."/users/".$login."/containers/");
-mkdir(TEMP_FOLDER.$path);
-mkdir(TEMP_FOLDER.$path."/files/");
+if (!file_exists(TEMP_PATH."/users/".$login."/containers/"))
+    mkdir(TEMP_PATH."/users/".$login."/containers/");
+mkdir(TEMP_PATH.$path);
+mkdir(TEMP_PATH.$path."/files/");
 
 // Записываем файлы переданные с фронта
 $filenames = [];
@@ -43,7 +43,7 @@ foreach ($data["files"] as $file) {
     array_push($filenames, $real_filename); // добавляем имя текущего файла в массив имён
 
     // Создаём и записываем файл
-    $f = fopen(TEMP_FOLDER.$path."/files/".$real_filename, "wb");
+    $f = fopen(TEMP_PATH.$path."/files/".$real_filename, "wb");
     fputs($f, base64_decode($file["data"]));
     fclose($f);
 }
@@ -54,7 +54,7 @@ $settings = [
     "files" => $filenames,
     "viewers" => $data["viewers"]
 ];
-$settingsFile = fopen(TEMP_FOLDER.$path."/settings.json", "wb");
+$settingsFile = fopen(TEMP_PATH.$path."/settings.json", "wb");
 fputs($settingsFile, json_encode($settings));
 fclose($settingsFile);
 
