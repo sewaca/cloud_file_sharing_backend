@@ -25,7 +25,7 @@ if (
     $login !== $data["userId"] or 
     !file_exists(TEMP_FOLDER."/users/".$login."/containers/".$data["containerId"]) or 
     ($data["filename"] !== null and !file_exists(TEMP_FOLDER."/users/".$login."/containers/".$data["containerId"]."/files/".$data["filename"]))
-) include BASE_PATH."/server/403.php";
+) include BASE_PATH."/server/404.php";
 
 // Если пользователь хочет удалить весь контейнер целиком:
 if ($data["filename"] === null) 

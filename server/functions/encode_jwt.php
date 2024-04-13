@@ -9,8 +9,6 @@ use \Firebase\JWT\JWT;
  * @return string The encoded JWT token.
  */
 function encode_jwt($user_email){
-  // TODO:? Возможно стоит добавить user_id 
-
   $token = array(
     "iss" => JWT_ISS,
     "aud" => JWT_AUD,

@@ -23,6 +23,4 @@ endpoint("users/.{1,}/containers/.{1,}", 'DELETE', "/server/pages/containers/del
 // ^ GET /users/*/containers/*
 endpoint("users/.{1,}/containers/.{1,}", "GET", "/server/pages/containers/get/");
 
-
 include BASE_PATH."/server/404.php";
-?>
