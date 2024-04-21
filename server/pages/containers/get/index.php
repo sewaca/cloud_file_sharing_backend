@@ -16,7 +16,7 @@ if (!file_exists($settings_file__path)) include BASE_PATH."/server/404.php";
 $settings = json_decode(file_get_contents($settings_file__path), true);
 
 // Проверяем разрешено ли пользователю просматривать контейнер
-if ($settings["viewers"] != "*"){
+if ($settings["viewers"] != "*" && $data["userId"] !== $login){
     if (!in_array($login, $settings["viewers"])) include BASE_PATH."/server/403.php";
 }
 

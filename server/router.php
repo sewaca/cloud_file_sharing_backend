@@ -5,6 +5,8 @@
 endpoint("users/login", "POST");
 // ! POST /users/register
 endpoint("users/register", "POST");
+
+if (!isset($_COOKIE["jwt"])) include BASE_PATH."/server/401.php";
 // ! POST /containers/create
 endpoint("containers/create", "POST");
 // & DELETE /users/*/containers/*
