@@ -1,5 +1,7 @@
 <?php 
 
+if (!isset($_COOKIE["jwt"])) include BASE_PATH."/server/401.php";
+
 // Получаем данные из запроса
 $uri = explode("/", explode('?', $_SERVER['REQUEST_URI'])[0]);
 $data = [
@@ -17,7 +19,8 @@ if (!file_exists($settings_file__path)) include BASE_PATH."/server/404.php";
 $settings = json_decode(file_get_contents($settings_file__path), true);
 
 // Проверяем разрешено ли пользователю просматривать контейнер
-if (!in_array($login, $settings["viewers"])) include BASE_PATH."/server/403.php";
+if ($settings["viewers"] != "*" && !in_array($login, $settings["viewers"])) 
+    include BASE_PATH."/server/403.php";
 
 mkdir(TEMP_PATH."/archives/");
 // Определяем путь до скачиваемого файла

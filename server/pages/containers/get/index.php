@@ -1,5 +1,7 @@
 <?php 
 
+if (!isset($_COOKIE["jwt"])) include BASE_PATH."/server/401.php";
+
 // Получаем данные из запроса
 $uri = explode("/", explode('?', $_SERVER['REQUEST_URI'])[0]);
 $data = [

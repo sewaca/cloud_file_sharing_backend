@@ -1,5 +1,8 @@
 <?php 
 
+
+if (!isset($_COOKIE["jwt"])) include BASE_PATH."/server/401.php";
+
 function removeDirectory($dir) {
     if ($objs = glob($dir."/*")) {
         foreach($objs as $obj) {

@@ -1,5 +1,7 @@
 <?php
 
+if (!isset($_COOKIE["jwt"])) include BASE_PATH."/server/401.php";
+
 // Проверяем что пользователь залогинен
 $login = decode_jwt($_COOKIE["jwt"]);
 if (!file_exists(TEMP_PATH."/users/".$login))
